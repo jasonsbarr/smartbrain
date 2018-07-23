@@ -1,12 +1,3 @@
-/**
- * Server endpoints:
- * / --> "It's working"
- * /signin --> POST = success/failure
- * /register --> POST = user
- * /profile/:userId --> GET = user
- * /image --> PUT = user
- */
-
 const Express = require('express');
 const bodyParser = require('body-parser');
 const app = Express();
