@@ -22,3 +22,4 @@ yarn-error.log*
 
 # User-added files
 src/Api.js
+.env
