@@ -19,7 +19,15 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.get('/', (req, res) => {
-  res.json(db.users);
+  db.select('*').from('users')
+    .then(users => {
+      if (users.length) {
+        res.json(users);
+      } else {
+        res.status(404).json('No users found.');
+      }
+    })
+    .catch(res.status(400).json('There was a problem.'));
 });
 
 app.get('/profile/:id', (req, res) => {
