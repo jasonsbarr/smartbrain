@@ -27,23 +27,25 @@ const clarifai = new Clarifai.App({
   apiKey: Api.apiKey
 });
 
+const initialState = {
+  input: '',
+  imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/fd/Transparent5x5.gif',
+  box: {},
+  route: 'signin',
+  isSignedIn: false,
+  user: {
+    id: '',
+    name: '',
+    email: '',
+    entries: 0,
+    joined: ''
+  }
+};
+
 class App extends Component {
   constructor() {
     super();
-    this.state = {
-      input: '',
-      imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/fd/Transparent5x5.gif',
-      box: {},
-      route: 'signin',
-      isSignedIn: false,
-      user: {
-        id: '',
-        name: '',
-        email: '',
-        entries: 0,
-        joined: ''
-      }
-    };
+    this.state = initialState;
   }
 
   loadUser = (data) => {
@@ -106,11 +108,7 @@ class App extends Component {
 
   onRouteChange = (route) => {
     if (route === 'signout') {
-      this.setState({ isSignedIn: false });
-      this.setState({
-        imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/fd/Transparent5x5.gif'
-      });
-      this.setState({box: {}});
+      this.setState(initialState);
     } else if (route === 'home') {
       this.setState({ isSignedIn: true });
     }
