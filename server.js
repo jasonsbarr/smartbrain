@@ -19,7 +19,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.get('/', (req, res) => {
-  db.select('*').from('users')
+  db.select('*').from('users').orderBy('id', 'asc')
     .then(users => {
       if (users.length) {
         res.json(users);
@@ -27,7 +27,7 @@ app.get('/', (req, res) => {
         res.status(404).json('No users found.');
       }
     })
-    .catch(res.status(400).json('There was a problem.'));
+    .catch(err => res.status(400).json('There was a problem.'));
 });
 
 app.get('/profile/:id', (req, res) => {
