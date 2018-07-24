@@ -67,17 +67,15 @@ app.post('/register', (req, res) => {
 
 app.put('/image', (req, res) => {
   const { id } = req.body;
-  let found = false;
-  db.users.forEach(user => {
-    if (user.id === id) {
-      found = true;
-      user.entries += 1;
-      return res.json(user.entries);
-    }
-  });
-  if (!found) {
-    res.status(404).json('User not found');
-  }
+  db('users').where({id}).increment('entries', 1).returning('entries')
+    .then(entries => {
+      if (entries.length) {
+        res.json(entries[0]);
+      } else {
+        res.status(404).json('User not found.');
+      }
+    })
+    .catch(err => res.status(400).json('Something went wrong.'));
 });
 
 app.listen(3000, () => {
