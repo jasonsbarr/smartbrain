@@ -44,12 +44,15 @@ app.get('/profile/:id', (req, res) => {
 });
 
 app.post('/signin', (req, res) => {
-  if (req.body.email === db.users[0].email &&
-      req.body.password === db.users[0].password) {
-        res.json(db.users[0]);
-      } else {
-        res.status(401).json('Error logging in');
-      }
+  db.select('email', 'hash').from('login').where('email', req.body.email)
+  .then(data => {
+    if (bcrypt.compareSync(req.body.password, data[0].hash)) {
+      return db.select('*').from('users').where('email', req.body.email)
+      .then(user => res.json(user[0]))
+      .catch(err => res.status(400).json('Error fetching user.'));
+    }
+    res.status(401).json('Email/password combination is invalid.');
+  })
 });
 
 app.post('/register', (req, res) => {
