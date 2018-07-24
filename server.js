@@ -33,14 +33,14 @@ app.get('/', (req, res) => {
 app.get('/profile/:id', (req, res) => {
   const { id } = req.params;
   db.select('*').from('users').where({id})
-    .then(user => {
-      if (user.length) {
-        res.json(user[0]);
-      } else {
-        res.status(404).json('User not found.');
-      }
-    })
-    .catch(err => res.status(400).json('Something went wrong.'));
+  .then(user => {
+    if (user.length) {
+      res.json(user[0]);
+    } else {
+      res.status(404).json('User not found.');
+    }
+  })
+  .catch(err => res.status(400).json('Something went wrong.'));
 });
 
 app.post('/signin', (req, res) => {
@@ -54,14 +54,28 @@ app.post('/signin', (req, res) => {
 
 app.post('/register', (req, res) => {
   const { email, name, password } = req.body;
-  db('users')
-    .returning('*')
-    .insert({
-    email,
-    name,
-    joined: new Date()
-  })
-    .then(user => res.json(user[0]))
+  const hash = bcrypt.hashSync(password);
+
+  db.transaction(trx => {
+    trx.insert({
+      hash,
+      email
+    })
+    .into('login')
+    .returning('email')
+    .then(loginEmail => {
+      return trx.insert({
+        email: loginEmail[0],
+        name,
+        joined: new Date()
+        })
+        .into('users')
+        .returning('*')
+        .then(user => res.json(user[0]))
+      })
+      .then(trx.commit)
+      .catch(trx.rollback)
+    })
     .catch(err => res.status(400).json("Unable to register."));
 });
 
