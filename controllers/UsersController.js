@@ -38,6 +38,10 @@ const get = () => (req, res) => {
 
 const create = () => (req, res) => {
   const { email, name, password } = req.body;
+
+  if (!validateRegister(email, name, password)) {
+    return res.status(400).json('You must enter all the required information.');
+  }
   const hash = bcrypt.hashSync(password);
 
   db.transaction(trx => {
@@ -64,10 +68,15 @@ const create = () => (req, res) => {
 };
 
 const login = () => (req, res) => {
-  db.select('email', 'hash').from('login').where('email', req.body.email)
+  const { email, password } = req.body;
+
+  if (!validateLogin(email, password)) {
+    return res.status(401).json('The username and password combination is invalid.');
+  }
+  db.select('email', 'hash').from('login').where('email', email)
   .then(data => {
-    if (bcrypt.compareSync(req.body.password, data[0].hash)) {
-      return db.select('*').from('users').where('email', req.body.email)
+    if (bcrypt.compareSync(password, data[0].hash)) {
+      return db.select('*').from('users').where('email', email)
       .then(user => res.json(user[0]))
       .catch(err => res.status(400).json('Error fetching user.'));
     }
@@ -87,6 +96,26 @@ const updateEntries = () => (req, res) => {
     })
     .catch(err => res.status(400).json('Something went wrong.'));
 };
+
+function validateRegister(args) {
+  const [email, name, password] = args;
+  let valid = false;
+  if (email && name && password) {
+    valid = true;
+  }
+
+  return valid;
+}
+
+function validateLogin(args) {
+  const [email, password] = args;
+  let valid = false;
+  if (email && password) {
+    valid = true;
+  }
+
+  return valid;
+}
 
 module.exports = {
   index,
