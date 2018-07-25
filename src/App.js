@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import config from './config';
 import Particles from 'react-particles-js';
 import Navigation from './components/Navigation/Navigation';
 import Logo from './components/Logo/Logo';
@@ -76,7 +77,7 @@ class App extends Component {
 
   onButtonSubmit = () => {
     this.setState({ imageUrl: this.state.input });
-    fetch('http://localhost:3000/imageurl', {
+    fetch(`${config.apiUrl}/imageurl`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -88,7 +89,7 @@ class App extends Component {
     .then(response => response.json())
     .then(data => {
       if (data) {
-        fetch('http://localhost:3000/image', {
+        fetch(`${config.apiUrl}/image`, {
           method: 'PUT',
           headers: {
             "Content-Type": "application/json"
