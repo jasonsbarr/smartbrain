@@ -1,4 +1,17 @@
-const index = (_, res, db) => {
+const bcrypt = require('bcrypt-nodejs');
+const knex = require('knex');
+
+const db = knex({
+  client: 'pg',
+  connection: {
+    host: '127.0.0.1',
+    user: 'smartbrain',
+    password: 'smartbrain',
+    database: 'smartbrain'
+  } 
+});
+
+const index = () => (_, res) => {
   db.select('*').from('users').orderBy('id', 'asc')
     .then(users => {
       if (users.length) {
@@ -10,7 +23,7 @@ const index = (_, res, db) => {
     .catch(err => res.status(400).json('There was a problem.'));
 };
 
-const get = (req, res, db) => {
+const get = () => (req, res) => {
   const { id } = req.params;
   db.select('*').from('users').where({id})
   .then(user => {
@@ -23,7 +36,7 @@ const get = (req, res, db) => {
   .catch(err => res.status(400).json('Something went wrong.'));
 };
 
-const create = (req, res, db, bcrypt) => {
+const create = () => (req, res) => {
   const { email, name, password } = req.body;
   const hash = bcrypt.hashSync(password);
 
@@ -50,7 +63,7 @@ const create = (req, res, db, bcrypt) => {
     .catch(err => res.status(400).json("Unable to register."));
 };
 
-const login = (req, res, db, bcrypt) => {
+const login = () => (req, res) => {
   db.select('email', 'hash').from('login').where('email', req.body.email)
   .then(data => {
     if (bcrypt.compareSync(req.body.password, data[0].hash)) {
@@ -62,7 +75,7 @@ const login = (req, res, db, bcrypt) => {
   })
 };
 
-const updateEntries = (req, res, db) => {
+const updateEntries = () => (req, res) => {
   const { id } = req.body;
   db('users').where({id}).increment('entries', 1).returning('entries')
     .then(entries => {
