@@ -1,0 +1,26 @@
+{
+  "name": "smartbrain",
+  "version": "1.0.0",
+  "description": "Simple PERN stack app for proof of concept",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install": "cd ui && npm install && cd ../api && npm install",
+    "start-react": "cd ui && npm start",
+    "start-server": "cd api && npm start",
+    "start": "run-p start-react start-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jasonsbarr/smartbrain.git"
+  },
+  "author": "Jason Barr <jason@jasonsbarr.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jasonsbarr/smartbrain/issues"
+  },
+  "homepage": "https://github.com/jasonsbarr/smartbrain#readme",
+  "devDependencies": {
+    "npm-run-all": "^4.1.3"
+  }
+}
