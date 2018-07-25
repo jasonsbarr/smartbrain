@@ -1,4 +1,5 @@
 const Express = require('express');
+const env = require('./env');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const UsersController = require('./controllers/UsersController');
@@ -16,6 +17,6 @@ app.post('/register', UsersController.create());
 app.post('/imageurl', ImageController.handleApiCall());
 app.put('/image', UsersController.updateEntries());
 
-app.listen(3000, () => {
-  console.log('App is running on port 3000');
+app.listen(env.port, () => {
+  console.log(`App is running on port ${env.port}`);
 });

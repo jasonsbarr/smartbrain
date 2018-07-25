@@ -1,13 +1,14 @@
+const env = require('../env');
 const bcrypt = require('bcrypt-nodejs');
 const knex = require('knex');
 
 const db = knex({
-  client: 'pg',
+  client: env.db.client,
   connection: {
-    host: '127.0.0.1',
-    user: 'smartbrain',
-    password: 'smartbrain',
-    database: 'smartbrain'
+    host: env.db.host,
+    user: env.db.user,
+    password: env.db.password,
+    database: env.db.database
   } 
 });
 
